@@ -27,13 +27,14 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 });
 
 // =============================
-// DASHBOARD MEMBER
+// DASHBOARD MEMBER (PELANGGAN)
 // =============================
-Route::middleware(['auth', 'verified', 'member'])->group(function () {
-    Route::get('/member/dashboard', function () {
-        return view('member.dashboard');
-    })->name('member.dashboard');
-});
+Route::middleware(['auth', 'verified', 'member'])
+    ->prefix('seller')
+    ->name('seller.')
+    ->group(function () {
+        Route::resource('categories', \App\Http\Controllers\Seller\ProductCategoryController::class);
+    });
 
 // =============================
 // PROFILE ROUTES
@@ -43,20 +44,53 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// =============================
+// HALAMAN HOME TAMBAHAN (TIDAK MENGGANGGU STRUKTUR)
+// =============================
 Route::get('/', function () {
     return view('home');
 });
 
 // =============================
-// SELLER ROUTES (MEMBER ONLY)
+// SELLER ROUTES (MEMBER WAJIB PUNYA TOKO)
 // =============================
 Route::middleware(['auth', 'verified', 'member'])
     ->prefix('seller')
     ->name('seller.')
     ->group(function () {
 
-        // CRUD Kategori Produk
+        // =============================
+        // SELLER DASHBOARD (WAJIB ADA)
+        // =============================
+        Route::get('/dashboard', function () {
+            return view('seller.dashboard');
+        })->name('dashboard');
+
+        // =============================
+        // CRUD Kategori Produk Seller
+        // =============================
         Route::resource('categories', \App\Http\Controllers\Seller\ProductCategoryController::class);
+
+        Route::middleware(['auth'])->group(function () {
+    Route::post('/wallet/checkout', [WalletController::class, 'checkout'])
+        ->name('wallet.checkout');
+         });
     });
+
+    Route::middleware('auth')->group(function () {
+
+    // route profile kamu di sini...
+
+    // ------- WALLET (TOPUP) -------
+    Route::get('/wallet/topup', [WalletController::class, 'topupForm'])
+        ->name('wallet.topup.form');
+
+    Route::post('/wallet/topup', [WalletController::class, 'topup'])
+        ->name('wallet.topup');
+
+    Route::post('/wallet/topup/{transaction}/confirm', [WalletController::class, 'confirmTopup'])
+        ->name('wallet.topup.confirm');
+});
 
 require __DIR__.'/auth.php';
