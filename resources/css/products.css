@@ -1,0 +1,149 @@
+/* 🌸 GLOBAL COLORS — konsisten homepage */
+:root {
+    --pink-soft: #FFE7EF;
+    --pink-light: #FFD3DF;
+    --pink-rose: #C97A92;
+    --white: #ffffff;
+    --shadow-soft: 0 8px 28px rgba(201, 122, 146, 0.12);
+}
+
+/* Floating Hearts */
+.floating-hearts { 
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: -1;
+}
+.heart {
+    position: absolute;
+    font-size: 1.2rem;
+    color: rgba(201, 122, 146, 0.15);
+    animation: float 8s ease-in-out infinite;
+}
+@keyframes float {
+    50% { transform: translateY(-20px) rotate(12deg); }
+}
+
+/* Layout */
+.main-container {
+    display: flex;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 270px;
+    padding: 1.8rem;
+    border-radius: 22px;
+    background: var(--white);
+    box-shadow: var(--shadow-soft);
+    height: fit-content;
+    position: sticky;
+    top: 120px;
+}
+
+.filter-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--pink-rose);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* Product Section */
+.product-section {
+    flex: 1;
+}
+
+/* Hero Banner */
+.hero-banner {
+    background: linear-gradient(135deg, var(--pink-light), #ffbfd2);
+    padding: 3rem;
+    border-radius: 22px;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-soft);
+}
+.hero-title {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: white;
+}
+
+/* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 2rem;
+}
+.product-card {
+    background: white;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: .3s;
+}
+.product-card:hover {
+    transform: translateY(-8px);
+}
+
+/* Image Frame (consistent with homepage oval) */
+.product-image {
+    height: 220px;
+    background: var(--pink-soft);
+    display: flex; justify-content: center; align-items: center;
+    border-radius: 20px;
+    position: relative;
+}
+.product-image::after {
+    content: "";
+    width: 90%; height: 85%;
+    border-radius: 50%;
+    border: 2px dashed var(--pink-light);
+    position: absolute;
+    opacity: .7;
+}
+.product-img {
+    max-width: 80%;
+}
+
+/* Info */
+.product-info {
+    padding: 1.4rem;
+}
+.product-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.product-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--pink-rose);
+}
+
+/* Button */
+.view-details {
+    width: 100%;
+    padding: .8rem;
+    border-radius: 50px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-top: .8rem;
+    background: linear-gradient(to right, var(--pink-light), var(--pink-rose));
+    transition: .3s;
+}
+.view-details:hover {
+    transform: scale(1.03);
+}
+
+/* Footer */
+.footer {
+    margin-top: 3rem;
+    padding: 2rem;
+    text-align: center;
+    background: white;
+    border-radius: 20px 20px 0 0;
+}

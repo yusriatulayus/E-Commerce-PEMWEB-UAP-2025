@@ -19,5 +19,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/', function () {
     return view('home');
 });
+use App\Http\Controllers\ProductController;
 
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
 require __DIR__.'/auth.php';
