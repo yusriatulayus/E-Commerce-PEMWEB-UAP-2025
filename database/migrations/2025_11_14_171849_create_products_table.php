@@ -9,28 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete();
-            $table->foreignId('product_category_id')->constrained('product_categories')->cascadeOnDelete();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->longText('description');
-            $table->enum('condition', ['new', 'second']);
-            $table->decimal('price', 26, 2);
-            $table->integer('weight');
-            $table->integer('stock');
-            $table->timestamps();
-        });
-    }
+   public function up(): void
+{
+    Schema::create('products', function (Blueprint $table) {
+        $table->id();
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('products');
-    }
+        // Relasi
+        $table->unsignedBigInteger('store_id')->nullable();
+        $table->unsignedBigInteger('product_category_id')->nullable();
+
+        // Data utama
+        $table->string('name');
+        $table->string('slug')->unique();
+        $table->text('description')->nullable();
+        $table->string('condition')->default('Baru');
+        $table->integer('price');
+        $table->integer('weight')->nullable();
+        $table->integer('stock')->default(0);
+
+        $table->timestamps();
+    });
+}
 };

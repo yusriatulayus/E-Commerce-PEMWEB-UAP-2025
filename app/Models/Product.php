@@ -6,43 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    protected $table = 'products'; // tabel products
 
     protected $fillable = [
         'store_id',
         'product_category_id',
+        'category',
         'name',
         'slug',
         'description',
         'condition',
         'price',
+        'main_image',
+        'images',
         'weight',
         'stock',
+        'store_name',
+        'store_logo',
+        'store_location',
+        'store_verified',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
+        'images' => 'array',
+        'store_verified' => 'boolean',
     ];
-
-    public function store()
-    {
-        return $this->belongsTo(Store::class);
-    }
-    public function productCategory()
-    {
-        return $this->belongsTo(ProductCategory::class);
-    }
-
-    public function productImages()
-    {
-        return $this->hasMany(ProductImage::class);
-    }
-
-    public function transactionDetails()
-    {
-        return $this->hasMany(TransactionDetail::class);
-    }
-    public function productReviews()
-    {
-        return $this->hasMany(ProductReview::class);
-    }
 }

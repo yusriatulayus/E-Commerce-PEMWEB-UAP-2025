@@ -195,9 +195,6 @@
             color: #d13b85;
         }
 
-        /* =============================================
-           🌸 RESPONSIVE
-        ============================================= */
         @media (max-width: 768px) {
             .product-wrapper {
                 flex-direction: column;
@@ -208,120 +205,90 @@
         }
     </style>
 
-    <div class="product-container">
+  <div class="product-container">
 
-        <!-- Breadcrumb -->
-        <nav class="breadcrumb">
-            <a href="/">Home</a> >
-            <a href="#">{{ $product->productCategory->name }}</a> >
-            <span>{{ $product->name }}</span>
-        </nav>
+    <!-- BREADCRUMB -->
+    <nav class="breadcrumb">
+        <a href="/">Home</a> >
+        <a href="#">{{ $product->category }}</a> >
+        <span>{{ $product->name }}</span>
+    </nav>
 
-        <div class="product-wrapper">
+    <div class="product-wrapper">
 
-            <!-- Left: Images -->
-            <div class="product-images">
+        <!-- IMAGES -->
+        <div class="product-images">
+            <img id="mainImage" src="{{ asset('images/' . $product->main_image) }}" class="main-image">
 
-                <!-- Main image -->
-                <img
-                    id="mainImage"
-                    class="main-image"
-                    src="{{ $product->productImages->first()
-                        ? asset('storage/' . $product->productImages->first()->image)
-                        : asset('images/noimage.png') }}"
-                >
-
-                <div class="thumbnail-carousel">
-                    @foreach ($product->productImages as $img)
-                        <img src="{{ asset('storage/' . $img->image) }}"
-                             class="thumb"
-                             onclick="changeImage(this)">
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Right: Product Info -->
-            <div class="product-info">
-                <h1 class="p-name">{{ $product->name }}</h1>
-                <p class="p-category">Kategori:
-                    <span>{{ $product->productCategory->name }}</span>
-                </p>
-
-                <div class="price">
-                    Rp {{ number_format($product->price, 0, ',', '.') }}
-                </div>
-
-                <table class="p-specs">
-                    <tr><td>Kondisi:</td>
-                        <td>{{ $product->condition == 'new' ? 'Baru' : 'Bekas' }}</td>
-                    </tr>
-                    <tr><td>Berat:</td><td>{{ $product->weight }} gr</td></tr>
-                    <tr><td>Stok:</td><td>{{ $product->stock }}</td></tr>
-                </table>
-
-                <div class="product-actions">
-                    <button class="btn-cart">Tambah ke Keranjang</button>
-                    <button class="btn-buy">Beli</button>
-                </div>
+            <div class="thumbnail-carousel">
+                @foreach ($product->images as $img)
+                    <img src="{{ asset('images/' . $img) }}" class="thumb" onclick="changeImage(this)">
+                @endforeach
             </div>
         </div>
 
-        <!-- Deskripsi -->
-        <section class="description-section">
-            <h2>Deskripsi Produk</h2>
-            <p>{{ $product->description }}</p>
-        </section>
+        <!-- INFO -->
+        <div class="product-info">
 
-        <!-- Toko -->
-        <section class="store-info">
-            <img src="{{ asset('images/store.png') }}" class="store-logo">
-            <div>
-                <h3>{{ $product->store->name }} <span class="verified">✔</span></h3>
-                <p>{{ $product->store->city ?? 'Lokasi tidak tersedia' }}</p>
+            <h1 class="p-name">{{ $product->name }}</h1>
+            <p class="p-category">Kategori: <span>{{ $product->category }}</span></p>
+
+            <div class="price">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+
+            <table class="p-specs">
+                <tr><td>Kondisi:</td><td>{{ $product->condition }}</td></tr>
+                <tr><td>Berat:</td><td>{{ $product->weight }} gr</td></tr>
+                <tr><td>Stok:</td><td>{{ $product->stock }}</td></tr>
+            </table>
+
+            <div class="product-actions">
+                <button class="btn-cart">Tambah ke Keranjang</button>
+                <button class="btn-buy">Beli</button>
             </div>
-        </section>
 
-        <!-- Reviews -->
-        <section class="review-section">
-            <h2>Rating & Ulasan</h2>
-
-            <div class="reviews">
-                @forelse ($product->productReviews as $review)
-                    <div class="review-item">
-                        <strong>{{ $review->user->name ?? 'User' }}</strong> ★★★★★
-                        <p>{{ $review->review }}</p>
-                    </div>
-                @empty
-                    <p>Belum ada ulasan.</p>
-                @endforelse
-            </div>
-        </section>
-
-        <!-- Related Products -->
-        <section class="related-section">
-            <h2>Produk Terkait</h2>
-
-            <div class="related-grid">
-                @foreach ($relatedProducts as $related)
-                    <div class="related-card">
-                        <img src="{{ $related->productImages->first()
-                                    ? asset('storage/' . $related->productImages->first()->image)
-                                    : asset('images/noimage.png') }}">
-                        <p>{{ $related->name }}</p>
-                        <span class="r-price">
-                            Rp {{ number_format($related->price, 0, ',', '.') }}
-                        </span>
-                    </div>
-                @endforeach
-            </div>
-        </section>
-
+        </div>
     </div>
 
-    <script>
-        function changeImage(el) {
-            document.getElementById('mainImage').src = el.src;
-        }
-    </script>
+    <!-- DESCRIPTION -->
+    <section class="description-section">
+        <h2>Deskripsi Produk</h2>
+        <p>{{ $product->description }}</p>
+    </section>
+
+    <!-- STORE -->
+    <section class="store-info">
+        <img src="{{ asset('images/' . $product->store_logo) }}" class="store-logo">
+
+        <div>
+            <h3>{{ $product->store_name }}
+                @if($product->store_verified)
+                    <span class="verified">✔</span>
+                @endif
+            </h3>
+            <p>{{ $product->store_location }}</p>
+        </div>
+    </section>
+
+    <!-- RELATED -->
+    <section class="related-section">
+        <h2>Produk Terkait</h2>
+
+        <div class="related-grid">
+            @foreach ($related as $r)
+                <div class="related-card">
+                    <img src="{{ asset('images/' . $r->main_image) }}">
+                    <p>{{ $r->name }}</p>
+                    <span class="r-price">Rp {{ number_format($r->price, 0, ',', '.') }}</span>
+                </div>
+            @endforeach
+        </div>
+    </section>
+</div>
+
+<script>
+function changeImage(el) {
+    document.getElementById('mainImage').src = el.src;
+}
+</script>
 
 </x-app-layout>

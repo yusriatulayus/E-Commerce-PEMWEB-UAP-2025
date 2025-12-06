@@ -1,25 +1,24 @@
 <?php
-
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Models\Product;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 Route::get('/', function () {
     return view('home');
 });
-use App\Http\Controllers\ProductController;
 
-Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
-require __DIR__.'/auth.php';
+// /product/1 → redirect ke slug
+Route::get('/product/{id}', function ($id) {
+    $product = Product::find($id);
+    if ($product) {
+        return redirect()->route('product.show', $product->slug);
+    }
+    abort(404);
+})->whereNumber('id'); // 🚀 FIX TERPENTING
+
+// /product/hijab-pashmina → controller
+Route::get('/product/{slug}', [ProductController::class, 'show'])
+    ->name('product.show');
+Route::get('/dashboard', function () {
+    return view('home');
+})->name('dashboard');
