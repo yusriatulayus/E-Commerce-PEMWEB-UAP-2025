@@ -1,0 +1,110 @@
+/* ======================================================
+   🌸 GLOBAL BACKGROUND PINK COQUETTE
+====================================================== */
+.bg-gray-100 {
+    background: linear-gradient(180deg, #ffe8f1, #ffd4e5, #ffbfd7) !important;
+}
+
+/* ======================================================
+   🌸 HERO SECTION — FIX LAYOUT BUBAR
+====================================================== */
+.hero {
+    margin-top: 40px;
+    min-height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;                    /* jarak kiri–tengah–kanan */
+    padding: 40px 0;
+}
+
+/* ======================================================
+   🌸 TRUE OVAL FRAME — FRAME BUKAN TELUR
+====================================================== */
+.hero-frame {
+    padding: 10px;
+    border: 4px solid #ffcee1;
+    border-radius: 50%;           /* OVAL WRAP */
+    background: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: auto;
+    height: auto;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.1),
+        0 0 20px rgba(255,150,190,0.35);
+
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.8s ease;
+}
+
+.hero-frame.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ======================================================
+   🌸 FOTO DI DALAM FRAME — MEPET & AESTHETIC
+====================================================== */
+.hero-frame img {
+    width: 230px;        /* ukuran PAS foto */
+    height: auto;
+    border-radius: 50%;  /* biar ngikut frame */
+}
+
+/* ======================================================
+   🌸 TEXT BLOCK TENGAH
+====================================================== */
+.hero-text {
+    max-width: 480px;
+    text-align: center;
+    color: #7b4a62;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards;
+}
+
+.hero-text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #b24776;
+}
+
+.hero-text p {
+    margin-top: 10px;
+    font-size: 1.15rem;
+}
+
+/* ======================================================
+   🌸 BUTTON
+====================================================== */
+.btn-shop {
+    margin-top: 25px;
+    padding: 14px 38px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    background: #ff9cbc;
+    color: white;
+    border: none;
+    font-weight: 600;
+
+    box-shadow: 0 8px 24px rgba(255,150,200,0.45);
+    transition: 0.3s ease;
+}
+
+.btn-shop:hover {
+    background: #ff82ac;
+    transform: translateY(-4px);
+}
+
+/* ======================================================
+   🌸 ANIMASI FADE
+====================================================== */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}

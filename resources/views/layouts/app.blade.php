@@ -26,11 +26,14 @@
                     </div>
                 </header>
             @endisset
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
             <!-- Page Content -->
             <main>
                 {{ $slot }}
             </main>
         </div>
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     </body>
 </html>
