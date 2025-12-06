@@ -7,11 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StoreBalance extends Model
 {
-<<<<<<< HEAD
-    //ini buat git
-=======
 
->>>>>>> 036daaa8f8af35e779eeb5601c169a0c5d527ff8
     protected $fillable = [
         'store_id',
         'balance',
