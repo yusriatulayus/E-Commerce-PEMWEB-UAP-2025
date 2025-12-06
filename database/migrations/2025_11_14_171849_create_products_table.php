@@ -4,15 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateProductsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete();
             $table->foreignId('product_category_id')->constrained('product_categories')->cascadeOnDelete();
             $table->string('name');
@@ -26,11 +23,8 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');
     }
-};
+}
