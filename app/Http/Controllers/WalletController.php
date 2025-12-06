@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UserBalance;
 use App\Models\Transaction;
+use App\Models\Product; // ➜ DITAMBAHKAN
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -32,11 +33,11 @@ class WalletController extends Controller
         $code = 'TOPUP-' . strtoupper(Str::random(10));
         $va   = '98765' . rand(1000000, 9999999);
 
-        // Simpan ke tabel transactions (pakai kolom yang sudah ada di migration kamu)
+        // Simpan ke tabel transactions
         $transaction = Transaction::create([
             'code'            => $code,
             'buyer_id'        => $user->id,
-            'store_id'        => 1, // sementara pakai 1 atau store default
+            'store_id'        => 1,
             'address'         => '-',
             'address_id'      => '-',
             'city'            => '-',
@@ -50,8 +51,7 @@ class WalletController extends Controller
             'payment_status'  => 'unpaid',
         ]);
 
-        // Di UAP, VA number biasanya disimpan juga.
-        // Kalau tabel transactions-mu punya kolom 'va_number', isi di sini.
+        // Jika tabel punya kolom VA
         if (schema()->hasColumn('transactions', 'va_number')) {
             $transaction->va_number = $va;
             $transaction->save();
@@ -67,7 +67,6 @@ class WalletController extends Controller
      */
     public function confirmTopup(Transaction $transaction)
     {
-        // Kalau sudah paid, jangan dobel
         if ($transaction->payment_status === 'paid') {
             return back()->with('info', 'Topup ini sudah pernah dikonfirmasi.');
         }
@@ -87,44 +86,81 @@ class WalletController extends Controller
         return back()->with('success', 'Topup berhasil, saldo sudah bertambah.');
     }
 
+    /**
+     * CHECKOUT PRODUK DENGAN 2 METODE:
+     * 1. Wallet
+     * 2. Transfer VA
+     */
     public function checkout(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'qty'        => 'required|integer|min:1',
+            'product_id'      => 'required|exists:products,id',
+            'qty'             => 'required|integer|min:1',
+            'payment_method'  => 'required|in:wallet,va', // ➜ DITAMBAHKAN
         ]);
 
         $user    = auth()->user();
         $product = Product::findOrFail($request->product_id);
 
-        // ambil / buat saldo user
-        $wallet = UserBalance::firstOrCreate(
-            ['user_id' => $user->id],
-            ['balance' => 0]
-        );
-
         $total = $product->price * $request->qty;
 
-        // cek saldo cukup
-        if ($wallet->balance < $total) {
-            return back()->with('error', 'Saldo tidak cukup untuk checkout.');
+        // --------------------------
+        // METODE 1: Wallet
+        // --------------------------
+        if ($request->payment_method === 'wallet') {
+
+            // ambil / buat saldo user
+            $wallet = UserBalance::firstOrCreate(
+                ['user_id' => $user->id],
+                ['balance' => 0]
+            );
+
+            // cek saldo
+            if ($wallet->balance < $total) {
+                return back()->with('error', 'Saldo tidak cukup untuk checkout.');
+            }
+
+            // cek stok
+            if ($product->stock < $request->qty) {
+                return back()->with('error', 'Stok produk tidak cukup.');
+            }
+
+            // potong saldo dan stok
+            $wallet->balance -= $total;
+            $wallet->save();
+
+            $product->stock -= $request->qty;
+            $product->save();
+
+            // buat transaksi selesai (paid)
+            Transaction::create([
+                'code'            => 'ORDER-' . strtoupper(Str::random(8)),
+                'buyer_id'        => $user->id,
+                'store_id'        => $product->store_id ?? 1,
+                'address'         => '-',
+                'address_id'      => '-',
+                'city'            => '-',
+                'postal_code'     => '-',
+                'shipping'        => '-',
+                'shipping_type'   => '-',
+                'shipping_cost'   => 0,
+                'tracking_number' => null,
+                'tax'             => 0,
+                'grand_total'     => $total,
+                'payment_status'  => 'paid',
+            ]);
+
+            return back()->with('success', 'Checkout dengan saldo berhasil!');
         }
 
-        // cek stok cukup
-        if ($product->stock < $request->qty) {
-            return back()->with('error', 'Stok produk tidak cukup.');
-        }
+        // --------------------------
+        // METODE 2: Transfer VA
+        // --------------------------
+        $code = 'ORDER-VA-' . strtoupper(Str::random(10));
+        $va   = '98765' . rand(1000000, 9999999);
 
-        // kurangi saldo dan stok
-        $wallet->balance -= $total;
-        $wallet->save();
-
-        $product->stock -= $request->qty;
-        $product->save();
-
-        // buat transaksi "paid" (pakai struktur tabel transactions yang sudah kamu punya)
-        Transaction::create([
-            'code'            => 'ORDER-' . strtoupper(Str::random(8)),
+        $transaction = Transaction::create([
+            'code'            => $code,
             'buyer_id'        => $user->id,
             'store_id'        => $product->store_id ?? 1,
             'address'         => '-',
@@ -137,9 +173,14 @@ class WalletController extends Controller
             'tracking_number' => null,
             'tax'             => 0,
             'grand_total'     => $total,
-            'payment_status'  => 'paid',
+            'payment_status'  => 'unpaid',
         ]);
 
-        return back()->with('success', 'Checkout dengan saldo berhasil!');
+        if (schema()->hasColumn('transactions', 'va_number')) {
+            $transaction->va_number = $va;
+            $transaction->save();
+        }
+
+        return back()->with('success', "Pesanan dibuat! Silakan bayar ke VA: $va");
     }
 }
