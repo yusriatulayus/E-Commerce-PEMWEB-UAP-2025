@@ -101,7 +101,7 @@
                 Temukan gaya yang cocok untukmu.
             </p>
 
-         <a href="{{ route('product.show', 'hijab-pashmina') }}" class="btn-shop">Shop Now</a>
+        <a href="{{ route('product.index') }}" class="btn-shop">Shop Now</a>
 
         <!-- FRAME OVAL KANAN -->
         <div class="hero-frame hero-right">

@@ -17,4 +17,17 @@ class ProductController extends Controller
 
         return view('product', compact('product', 'related'));
     }
+
+    public function index()
+    {
+        $categories = \App\Models\ProductCategory::all();
+        $selectedCategory = request('category');
+
+        $products = Product::when($selectedCategory, function ($query) use ($selectedCategory) {
+            $query->where('product_category_id', $selectedCategory);
+        })->get();
+
+        return view('products.index', compact('products', 'categories', 'selectedCategory'));
+    }
+
 }

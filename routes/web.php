@@ -11,7 +11,7 @@ Route::get('/', function () {
     return view('home'); // jika home.blade tidak ada, ubah ke welcome.blade.php
 })->name('home');
 
-Route::resource('product', ProductController::class);
+Route::get('/products', [ProductController::class, 'index'])->name('product.index');
 
 // =============================
 // DASHBOARD DEFAULT BREEZE
