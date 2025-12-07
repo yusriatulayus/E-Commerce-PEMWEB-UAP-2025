@@ -73,7 +73,7 @@ Route::middleware(['auth', 'verified', 'member'])
         Route::resource('categories', \App\Http\Controllers\Seller\ProductCategoryController::class);
 
         Route::middleware(['auth'])->group(function () {
-    Route::post('/wallet/checkout', [WalletController::class, 'checkout'])
+        Route::post('/wallet/checkout', [WalletController::class, 'checkout'])
         ->name('wallet.checkout');
          });
     });
