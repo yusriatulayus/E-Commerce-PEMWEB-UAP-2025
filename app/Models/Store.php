@@ -7,18 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class Store extends Model
 {
 
-    protected $fillable = [
-        'user_id',
-        'name',
-        'logo',
-        'about',
-        'phone',
-        'address_id',
-        'city',
-        'address',
-        'postal_code',
-        'is_verified',
-    ];
+   protected $fillable = [
+    'user_id',
+    'name',
+    'logo',
+    'about',
+    'address',
+    'contact',
+];
 
     // relationships one store has one owner (user)
     public function user()
