@@ -11,29 +11,29 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('product_categories', function (Blueprint $table) {
-            $table->id(); 
-            
-            $table->foreignId('store_id')
-                  ->constrained('stores')
-                  ->cascadeOnDelete();
+   public function up()
+{
+    Schema::create('products', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('slug')->unique();
+        $table->string('category');
+        $table->string('condition')->default('Baru');
+        $table->integer('weight')->nullable();
+        $table->integer('stock')->default(0);
+        $table->integer('price');
+        $table->string('main_image');
+        $table->json('images')->nullable();
+        $table->text('description')->nullable();
 
-            $table->string('image')->nullable();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->string('tagline')->nullable();
-            $table->text('description')->nullable(); 
-            $table->timestamps();
-        });
-    }
+        // Store info
+        $table->string('store_name')->default('Ayus Fashion');
+        $table->string('store_logo')->default('store_logo.png');
+        $table->string('store_location')->default('Malang');
+        $table->boolean('store_verified')->default(true);
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('product_categories');
-    }
+        $table->timestamps();
+    });
+}
+
 };

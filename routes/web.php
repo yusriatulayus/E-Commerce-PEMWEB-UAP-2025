@@ -4,11 +4,11 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // =============================
-// HOME
+// HOME (Frontend)
 // =============================
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('home'); // jika home.blade tidak ada, ubah ke welcome.blade.php
+})->name('home');
 
 // =============================
 // DASHBOARD DEFAULT BREEZE
@@ -73,7 +73,7 @@ Route::middleware(['auth', 'verified', 'member'])
         Route::resource('categories', \App\Http\Controllers\Seller\ProductCategoryController::class);
 
         Route::middleware(['auth'])->group(function () {
-        Route::post('/wallet/checkout', [WalletController::class, 'checkout'])
+    Route::post('/wallet/checkout', [WalletController::class, 'checkout'])
         ->name('wallet.checkout');
          });
     });
